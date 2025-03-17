@@ -5,8 +5,8 @@ from .supervised_base import MVTech_SP_split
 
 
 class MVTech_AD_supervised_split(MVTech_SP_split):
-    def __init__(self, dataset_path, classname, train_split, dist_adjust=False, multiclass=False):
-        super().__init__(dataset_path, classname, train_split, dist_adjust, multiclass)
+    def __init__(self, dataset_path, classname, train_split, val_split, dist_adjust=False, multiclass=False):
+        super().__init__(dataset_path, classname, train_split, val_split, dist_adjust, multiclass)
         
     def create_samples(self):
       self.class_mapping["0"] = "No defect"
@@ -35,8 +35,8 @@ class MVTech_AD_supervised_split(MVTech_SP_split):
 
         
 class MVTech_LOCO_supervised_split(MVTech_SP_split):
-    def __init__(self, dataset_path, classname, train_split, dist_adjust=False, multiclass=False):
-        super().__init__(dataset_path, classname, train_split, dist_adjust, multiclass)
+    def __init__(self, dataset_path, classname, train_split, val_split, dist_adjust=False, multiclass=False):
+        super().__init__(dataset_path, classname, train_split, val_split, dist_adjust, multiclass)
         
     def create_samples(self):
       self.class_mapping["0"] = "No defect"

@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 
 
 class MVTech_SP_split(ABC):
-    def __init__(self, dataset_path, classname, train_split, dist_adjust=False, multiclass=False):
+    def __init__(self, dataset_path, classname, train_split, val_split, dist_adjust=False, multiclass=False):
         """
         Args:
             root_dir (string): Path to either 'train' or 'test' directory
@@ -24,6 +24,7 @@ class MVTech_SP_split(ABC):
         self.classname = classname
         self.root_dir = os.path.join(dataset_path, classname)
         self.train_split = train_split
+        self.val_split = val_split
         self.dist_adjust = dist_adjust
         self.defect_classes = self.defect_classes()
         self.multiclass = multiclass
@@ -35,6 +36,7 @@ class MVTech_SP_split(ABC):
         self.defect_samples = {}
 
         self.train = []
+        self.val = []
         self.test = []
 
         self.create_samples()
@@ -58,20 +60,26 @@ class MVTech_SP_split(ABC):
             adjust = self.nb_no_defect_samples // self.nb_defect_samples
             
         threshold_train = math.ceil((self.train_split*self.nb_no_defect_samples)/adjust)
-        threshold_test = threshold_train + (len(self.no_defect_samples[:threshold_train])//adjust)+1
+        threshold_val = threshold_train + math.ceil((len(self.no_defect_samples[threshold_train:]))/2)
         self.train += (self.no_defect_samples[:threshold_train])
-        self.test += (self.no_defect_samples[threshold_train:threshold_test])
+        self.val += (self.no_defect_samples[threshold_train:threshold_val])
+        self.test += (self.no_defect_samples[threshold_val:])
         
         for i, defect_class in enumerate(self.defect_classes):
             samples = self.defect_samples[str(i+1)]
-            self.train += (samples[:math.ceil(self.train_split*len(samples))])
-            self.test += (samples[math.ceil(self.train_split*len(samples)):])
+            
+            train_threshold = math.ceil(self.train_split*len(samples))
+            val_threshold = train_threshold + math.ceil((self.val_split/2)*len(samples))
+            
+            self.train += samples[:train_threshold]
+            self.val += samples[train_threshold:val_threshold]
+            self.test += samples[val_threshold:]
     
     def plot_dist(self):
         
-        fig, ax = plt.subplots(1, 2, figsize=(12, 5), sharey=True)
+        fig, ax = plt.subplots(1, 3, figsize=(12, 5), sharey=True)
         global_dist = []
-        for i, (dataset_part, title) in enumerate(zip([self.train, self.test], ["Train", "Val"])):
+        for i, (dataset_part, title) in enumerate(zip([self.train, self.val, self.test], ["Train", "Val", "Test"])):
             labels = []
             for item in dataset_part:
                 if isinstance(item, tuple):
