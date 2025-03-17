@@ -1,1 +1,1 @@
-__all__ = ["loaders"]
+__all__ = ["splitters"]
