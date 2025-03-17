@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "futur"
+name = "thor"
 version = "0.1.0"
 description = "Custom objects to train my models"
 authors = [{ name = "Théo MOREAU", email = "theo.moreau@octo.com" }]
@@ -14,5 +14,5 @@ dependencies = [
 
 ]
 
-[project.scripts]
-my_command = "my_package.my_module:main" 
+[tool.setuptools]
+packages = ["thor"]
