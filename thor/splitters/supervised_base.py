@@ -2,7 +2,6 @@ import os
 import glob
 import re
 import math
-
 from abc import ABC, abstractmethod
 
 from PIL import Image
@@ -108,3 +107,6 @@ class MVTech_SP_split(ABC):
 
         plt.show()
         return global_dist
+    
+    def return_splits(self):
+        return self.train, self.val, self.test
