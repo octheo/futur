@@ -45,18 +45,18 @@ class BaseTrainer(ABC):
 
         return running_loss / i
     
-    def log_image_table(images, predicted, labels, nb_classes, probs):
+    def log_image_table(images, predicted, labels, nb_classes, wandb_run, probs):
         # Create a wandb Table to log images, labels and predictions to
-        table = wandb.Table(
+        table = wandb_run.Table(
             columns=["image", "pred", "target"] + [f"score_{i}" for i in range(nb_classes)]
         )
         for img, pred, targ, prob in zip(
             images.to("cpu"), predicted.to("cpu"), labels.to("cpu"), probs.to("cpu")
         ):
-            table.add_data(wandb.Image(img[0].numpy() * 255), pred, targ, *prob.numpy())
-        wandb.log({"predictions_table": table}, commit=False)
+            table.add_data(wandb_run.Image(img[0].numpy() * 255), pred, targ, *prob.numpy())
+        wandb_run.log({"predictions_table": table}, commit=False)
 
-    def validate_model(self, model, test_dl, nb_classes, device, log_images=False, batch_idx=0):
+    def validate_model(self, model, test_dl, nb_classes, device, wandb_run, log_images=False, batch_idx=0):
         model.eval()
         val_loss = 0.0
         with torch.inference_mode():
@@ -68,11 +68,11 @@ class BaseTrainer(ABC):
                 loss = self.loss.compute_loss(output_logits, labels)
 
                 if i == batch_idx and log_images:
-                    log_image_table(images, predicted, labels, nb_classes, outputs.softmax(dim=1))
+                    log_image_table(images, predicted, labels, nb_classes, wandb_run, outputs.softmax(dim=1))
 
             metrics_results = self.metrics.compute_metrics(output_logits, labels)
             for k, v in metrics_results.items():
-                wandb.summary[f"test_{k}"] = v
+                wandb_run.summary[f"test_{k}"] = v
 
     def evaluate(self, model, epoch, val_dataloader, nb_classes, device, wandb_run):
         running_loss = 0.
