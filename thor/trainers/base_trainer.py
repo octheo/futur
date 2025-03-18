@@ -45,6 +45,35 @@ class BaseTrainer(ABC):
 
         return running_loss / i
     
+    def log_image_table(images, predicted, labels, nb_classes, probs):
+        # Create a wandb Table to log images, labels and predictions to
+        table = wandb.Table(
+            columns=["image", "pred", "target"] + [f"score_{i}" for i in range(nb_classes)]
+        )
+        for img, pred, targ, prob in zip(
+            images.to("cpu"), predicted.to("cpu"), labels.to("cpu"), probs.to("cpu")
+        ):
+            table.add_data(wandb.Image(img[0].numpy() * 255), pred, targ, *prob.numpy())
+        wandb.log({"predictions_table": table}, commit=False)
+
+    def validate_model(model, test_dl, nb_classes, device, log_images=False, batch_idx=0):
+        model.eval()
+        val_loss = 0.0
+        with torch.inference_mode():
+            correct = 0
+            for i, (images, _, labels) in enumerate(test_dl):
+                images, labels = images.to(device), labels.to(device)
+
+                output_logits = self.model_prediction(model, images)
+                loss = self.loss.compute_loss(output_logits, labels)
+
+                if i == batch_idx and log_images:
+                    log_image_table(images, predicted, labels, nb_classes, outputs.softmax(dim=1))
+
+            metrics_results = self.metrics.compute_metrics(output_logits, labels)
+            for k, v in metrics_results.items():
+                wandb.summary[f"test_{k}"] = v
+
     def evaluate(self, model, epoch, val_dataloader, nb_classes, device, wandb_run):
         running_loss = 0.
         
