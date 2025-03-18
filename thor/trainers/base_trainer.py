@@ -56,7 +56,7 @@ class BaseTrainer(ABC):
             table.add_data(wandb.Image(img[0].numpy() * 255), pred, targ, *prob.numpy())
         wandb.log({"predictions_table": table}, commit=False)
 
-    def validate_model(model, test_dl, nb_classes, device, log_images=False, batch_idx=0):
+    def validate_model(self, model, test_dl, nb_classes, device, log_images=False, batch_idx=0):
         model.eval()
         val_loss = 0.0
         with torch.inference_mode():
