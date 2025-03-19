@@ -71,7 +71,7 @@ class BaseTrainer(ABC):
                 if i == batch_idx and log_images:
                     self.log_image_table(images, output_logits, labels, nb_classes, wandb_run, output_logits.softmax(dim=1))
 
-            metrics_results = self.metrics.compute_metrics(self, model, test_dl, device, sample_set="test")
+            metrics_results = self.metrics.compute_metrics(self, model, test_dl, device, samples_set="test")
             for k, v in metrics_results.items():
                 wandb_run.summary[f"test_{k}"] = v
 
