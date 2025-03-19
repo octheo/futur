@@ -119,8 +119,9 @@ class BaseTrainer(ABC):
                 best_vloss = avg_vloss
                 if len(save_path) > 1:
                     torch.save(model.state_dict(), save_path)
-                    if model_artifact is not None:
-                        model_artifact.add_file(save_path)
-                        wandb.save(save_path)
+            
+        if model_artifact is not None:
+            model_artifact.add_file(save_path)
+            wandb.save(save_path)
         
         wandb_run.log_artifact(model_artifact)
