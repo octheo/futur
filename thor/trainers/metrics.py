@@ -21,7 +21,7 @@ class ClassificationMetrics(Metric):
         self.nb_classes = nb_classes
         self.cls_mapping = {"f1": MulticlassF1Score(average="macro", num_classes=self.nb_classes),
                                  "precision": MulticlassPrecision(average="macro", num_classes=self.nb_classes),
-                                 "recall": MulticlassRecall(average="macro", num_classes=self.nb_classes)
+                                 "recall": MulticlassRecall(average="macro", num_classes=self.nb_classes),
                                  "AP": MulticlassAUPRC(num_classes=self.nb_classes)
                                 } 
     
