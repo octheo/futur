@@ -66,10 +66,11 @@ class BaseTrainer(ABC):
                 images, labels = images.to(device), labels.to(device)
 
                 output_logits = self.model_prediction(model, images)
+                _, predicted = torch.max(output_logits, 1)
                 loss = self.loss.compute_loss(output_logits, labels)
 
                 if i == batch_idx and log_images:
-                    self.log_image_table(images, output_logits, labels, nb_classes, wandb_run, output_logits.softmax(dim=1))
+                    self.log_image_table(images, predicted, labels, nb_classes, wandb_run, output_logits.softmax(dim=1))
 
             metrics_results = self.metrics.compute_metrics(self, model, test_dl, device, samples_set="test")
             for k, v in metrics_results.items():
