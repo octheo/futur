@@ -36,6 +36,6 @@ class ClassificationMetrics(Metric):
                 metric.update(output_logits, labels)
             result = metric.compute()
             metric.reset()
-            computed_metrics[samples_set + "_" + metric] = result
+            computed_metrics[samples_set + "_" + m] = result
         
         return computed_metrics
