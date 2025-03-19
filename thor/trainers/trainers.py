@@ -29,7 +29,7 @@ class ClassificationTrainer(BaseTrainer):
             
         if wandb_run is not None:
             metrics_results = self.metrics.compute_metrics(self, model, train_dataloader, device)
-            wandb_run.log(metrics_results)
+            wandb_run.log(metrics_results | {"epoch": epoch})
 
             running_loss += loss.item()
 
@@ -82,7 +82,7 @@ class ClassificationTrainer(BaseTrainer):
 
             if wandb_run is not None:
                 metrics_results = self.metrics.compute_metrics(self, model, val_dataloader, device, samples_set="val")
-                wandb_run.log(metrics_results)
+                wandb_run.log(metrics_results | {"epoch": epoch})
                 
                 running_loss += loss.item()
                 
