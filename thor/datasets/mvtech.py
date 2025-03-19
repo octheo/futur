@@ -41,7 +41,7 @@ class MVTechDataset_cls(Dataset):
     def __getitem__(self, idx):
         img_path, label = self.samples[idx]
         image = Image.open(img_path).convert('RGB')
-        mask = np.zeros((1, image.size[0], image.size[1]))
+        mask = None
 
         # Apply transforms
         if self.transform:
