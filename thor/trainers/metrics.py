@@ -30,7 +30,7 @@ class ClassificationMetrics(Metric):
         computed_metrics = {}
         for m in tqdm(self.selected_metrics, total=len(self.selected_metrics), unit="Metric", desc=f"Metric computation"):
             for batch in dataloader:
-                images, _, labels = batch
+                images, labels = batch
                 images, labels = images.to(device), labels.to(device)
                 output_logits = trainer.model_prediction(model, images)
                 metric = self.cls_mapping[m]
