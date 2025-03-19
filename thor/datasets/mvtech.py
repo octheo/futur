@@ -1,5 +1,6 @@
 from PIL import Image
 import numpy as np
+import torch
 from torch.utils.data import Dataset
 import matplotlib.pyplot as plt
 
@@ -41,7 +42,7 @@ class MVTechDataset_cls(Dataset):
     def __getitem__(self, idx):
         img_path, label = self.samples[idx]
         image = Image.open(img_path).convert('RGB')
-        mask = None
+        mask = torch.tensor([0])
 
         # Apply transforms
         if self.transform:
