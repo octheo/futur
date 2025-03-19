@@ -27,7 +27,7 @@ class ClassificationMetrics(Metric):
     
     def compute_metrics(self, trainer, model, dataloader, device, samples_set="train"):
         computed_metrics = {}
-        for m in self.selected_metrics:
+        for m in tqdm(self.selected_metrics, total=len(self.selected_metrics), unit="Metric", desc=f"Metric computation"):
             for batch in dataloader:
                 images, _, labels = batch
                 images, labels = images.to(device), labels.to(device)
