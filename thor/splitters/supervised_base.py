@@ -2,12 +2,12 @@ import os
 import glob
 import re
 import math
+from collections import Counter
 from abc import ABC, abstractmethod
 
 from PIL import Image
 import numpy as np
 import matplotlib.patches as mpatches
-from collections import Counter
 import matplotlib.pyplot as plt
 
 
