@@ -42,10 +42,9 @@ class MVTechDataset_cls(Dataset):
     def __getitem__(self, idx):
         img_path, label = self.samples[idx]
         image = Image.open(img_path).convert('RGB')
-        mask = torch.tensor([0])
 
         # Apply transforms
         if self.transform:
             image = self.transform(image)
 
-        return image, mask, label
+        return image, label
