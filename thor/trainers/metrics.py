@@ -1,5 +1,5 @@
 import typing
-import tqdm
+from tqdm import tqdm
 from abc import ABC, abstractmethod
 
 from torcheval.metrics import MulticlassRecall, MulticlassPrecision, MulticlassF1Score, MulticlassAUPRC
