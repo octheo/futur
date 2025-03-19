@@ -47,13 +47,13 @@ class BaseTrainer(ABC):
     
     def log_image_table(self, images, predicted, labels, nb_classes, wandb_run, probs):
         # Create a wandb Table to log images, labels and predictions to
-        table = wandb_run.Table(
+        table = wandb.Table(
             columns=["image", "pred", "target"] + [f"score_{i}" for i in range(nb_classes)]
         )
         for img, pred, targ, prob in zip(
             images.to("cpu"), predicted.to("cpu"), labels.to("cpu"), probs.to("cpu")
         ):
-            table.add_data(wandb_run.Image(img[0].numpy() * 255), pred, targ, *prob.numpy())
+            table.add_data(wandb.Image(img[0].numpy() * 255), pred, targ, *prob.numpy())
         wandb_run.log({"predictions_table": table}, commit=False)
 
     def validate_model(self, model, test_dl, nb_classes, device, wandb_run, log_images=False, batch_idx=0):
