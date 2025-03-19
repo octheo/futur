@@ -33,13 +33,13 @@ class BaseTrainer(ABC):
             output_logits = self.model_prediction(model, images)
             loss = self.loss.compute_loss(output_logits, labels)
             loss.backward()
-
+            if wandb_run is not None:
+                wandb_run.log({"train_loss": loss})
             self.optimizer.step()
             
-            if wandb_run is not None:
-                metrics_results = self.metrics.compute_metrics(output_logits, labels)
-                wandb_log = {"train_loss": loss} | metrics_results
-                wandb_run.log(wandb_log)
+        if wandb_run is not None:
+            metrics_results = self.metrics.compute_metrics(self, model, train_dataloader, device)
+            wandb_run.log(metrics_results)
 
             running_loss += loss.item()
 
@@ -70,7 +70,7 @@ class BaseTrainer(ABC):
                 if i == batch_idx and log_images:
                     self.log_image_table(images, output_logits, labels, nb_classes, wandb_run, output_logits.softmax(dim=1))
 
-            metrics_results = self.metrics.compute_metrics(output_logits, labels)
+            metrics_results = self.metrics.compute_metrics(self, model, test_dl, device, sample_set="test")
             for k, v in metrics_results.items():
                 wandb_run.summary[f"test_{k}"] = v
 
@@ -86,11 +86,12 @@ class BaseTrainer(ABC):
 
                 output_logits = self.model_prediction(model, images)
                 loss = self.loss.compute_loss(output_logits, labels)
-                
                 if wandb_run is not None:
-                    metrics_results = self.metrics.compute_metrics(output_logits, labels, samples_set="val")
-                    wandb_log = {"val_loss": loss} | metrics_results
-                    wandb_run.log(wandb_log)
+                    wandb_run.log({"val_loss": loss})
+
+            if wandb_run is not None:
+                metrics_results = self.metrics.compute_metrics(self, model, val_dataloader, device, samples_set="val")
+                wandb_run.log(metrics_results)
                 
                 running_loss += loss.item()
                 

@@ -25,13 +25,14 @@ class ClassificationMetrics(Metric):
                                  "AP": MulticlassAUPRC(num_classes=self.nb_classes)
                                 } 
     
-    def compute_metrics(self, dataloader, output_logits, labels, samples_set="train"):
+    def compute_metrics(self, trainer, model, dataloader, device, samples_set="train"):
         computed_metrics = {}
-        _, predicted = torch.max(output_logits, 1)
         for metric in self.selected_metrics:
             for batch in dataloader:
                 images, _, labels = batch
-                metric = self.function_mapping[metric]
+                images, labels = images.to(device), labels.to(device)
+                output_logits = trainer.model_prediction(model, images)
+                metric = self.cls_mapping[metric]
                 metric.update(output_logits, labels)
             result = metric.compute()
             metric.reset()
