@@ -45,7 +45,7 @@ class BaseTrainer(ABC):
 
         return running_loss / i
     
-    def log_image_table(images, predicted, labels, nb_classes, wandb_run, probs):
+    def log_image_table(self, images, predicted, labels, nb_classes, wandb_run, probs):
         # Create a wandb Table to log images, labels and predictions to
         table = wandb_run.Table(
             columns=["image", "pred", "target"] + [f"score_{i}" for i in range(nb_classes)]
