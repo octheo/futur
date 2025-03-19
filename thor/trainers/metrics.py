@@ -27,12 +27,12 @@ class ClassificationMetrics(Metric):
     
     def compute_metrics(self, trainer, model, dataloader, device, samples_set="train"):
         computed_metrics = {}
-        for metric in self.selected_metrics:
+        for m in self.selected_metrics:
             for batch in dataloader:
                 images, _, labels = batch
                 images, labels = images.to(device), labels.to(device)
                 output_logits = trainer.model_prediction(model, images)
-                metric = self.cls_mapping[metric]
+                metric = self.cls_mapping[m]
                 metric.update(output_logits, labels)
             result = metric.compute()
             metric.reset()
