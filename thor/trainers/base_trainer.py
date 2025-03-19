@@ -4,6 +4,7 @@ from tqdm import tqdm
 
 from torch.utils.data import DataLoader
 import torch
+import wandb
 
 from .loss import Loss
 from .metrics import Metric
