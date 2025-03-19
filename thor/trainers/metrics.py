@@ -1,8 +1,8 @@
 import typing
 from abc import ABC, abstractmethod
 
-from torcheval.metrics.functional import multiclass_f1_score
-from torcheval.metrics import MulticlassPrecision, MulticlassRecall, MulticlassAUPRC
+from torcheval.metrics.functional import multiclass_f1_score, multiclass_precision, multiclass_recall
+from torcheval.metrics import MulticlassAUPRC
 import torch
 
 class Metric(ABC):
@@ -21,8 +21,8 @@ class ClassificationMetrics(Metric):
         super().__init__(selected_metrics)
         self.nb_classes = nb_classes
         self.function_mapping = {"f1": multiclass_f1_score, 
-                                 "precision": self.precision,
-                                 "recall": self.recall,
+                                 "precision": multiclass_precision,
+                                 "recall": multiclass_recall,
                                  "AP": self.AP
                                 }
     
@@ -31,20 +31,10 @@ class ClassificationMetrics(Metric):
         _, predicted = torch.max(output_logits, 1)
         for metric in self.selected_metrics:
             metric_fn = self.function_mapping[metric]
-            result = metric_fn(predicted, labels, num_classes=self.nb_classes)
+            result = metric_fn(output_logits, labels, num_classes=self.nb_classes)
             computed_metrics[samples_set + "_" + metric] = result
         
         return computed_metrics
-    
-    def precision(self, output_logits, labels, num_classes=None):
-        precision = MulticlassPrecision(num_classes=num_classes, average="micro")
-        precision.update(output_logits, labels)
-        return precision.compute()
-    
-    def recall(self, output_logits, labels, num_classes=None):
-        recall = MulticlassRecall(num_classes=num_classes)
-        recall.update(output_logits, labels)
-        return recall.compute()
     
     def AP(self, output_logits, labels, num_classes=None):
         average_precision = MulticlassAUPRC(num_classes=num_classes)
