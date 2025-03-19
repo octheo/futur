@@ -99,7 +99,7 @@ class BaseTrainer(ABC):
                 
         return running_loss / i
     
-    def train(self, model, epochs, train_dataloader, validation_dataloader, nb_classes, device, save_path="", wandb_run=None):
+    def train(self, model, epochs, train_dataloader, validation_dataloader, nb_classes, device, save_path="", wandb_run=None, model_artifact=None):
         best_vloss = 1_000_000.
         
         model.to(device)
@@ -118,4 +118,9 @@ class BaseTrainer(ABC):
             if avg_vloss < best_vloss:
                 best_vloss = avg_vloss
                 if len(save_path) > 1:
-                    torch.save(model.state_dict(), save_path)
+                    torch.save(model.state_dict(), save_path + f"v{epoch}.pth")
+                    if model_artifact is not None:
+                        model_artifact.add_file(save_path + f"v{epoch}.pth")
+                        wandb.save(save_path + f"v{epoch}.pth")
+        
+        wandb_run.log_artifact(model_artifact)
