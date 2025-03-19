@@ -29,11 +29,11 @@ class ClassificationTrainer(BaseTrainer):
             
         if wandb_run is not None:
             metrics_results = self.metrics.compute_metrics(self, model, train_dataloader, device)
-            wandb_run.log(metrics_results | {"epoch": epoch})
-
             running_loss += loss.item()
 
-        return running_loss / i
+            return running_loss / i, metrics_results
+
+        return running_loss / i, None
     
     def log_image_table(self, images, predicted, labels, nb_classes, wandb_run, probs):
         # Create a wandb Table to log images, labels and predictions to
@@ -82,8 +82,8 @@ class ClassificationTrainer(BaseTrainer):
 
             if wandb_run is not None:
                 metrics_results = self.metrics.compute_metrics(self, model, val_dataloader, device, samples_set="val")
-                wandb_run.log(metrics_results | {"epoch": epoch})
-                
                 running_loss += loss.item()
+
+                return running_loss / i, metrics_results
                 
-        return running_loss / i
+        return running_loss / i, None

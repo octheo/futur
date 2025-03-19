@@ -44,13 +44,13 @@ class BaseTrainer(ABC):
         
         for epoch in range(epochs):
             
-            avg_loss = self.train_one_epoch(model, epoch, train_dataloader, nb_classes, device, wandb_run)
-            avg_vloss = self.evaluate(model, epoch, validation_dataloader, nb_classes, device, wandb_run)
+            avg_loss, metric_results = self.train_one_epoch(model, epoch, train_dataloader, nb_classes, device, wandb_run)
+            avg_vloss, vmetric_results = self.evaluate(model, epoch, validation_dataloader, nb_classes, device, wandb_run)
             
             print(f"train loss: {avg_loss}, val loss: {avg_vloss}")
                   
             if wandb_run is not None:
-                wandb_log = {"avg_train_loss": avg_loss, "avg_val_loss": avg_vloss, "epoch": epoch}
+                wandb_log = metric_results | vmetric_results | {"avg_train_loss": avg_loss, "avg_val_loss": avg_vloss, "epoch": epoch}
                 wandb_run.log(wandb_log)
             
             if avg_vloss < best_vloss:
