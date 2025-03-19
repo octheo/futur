@@ -50,7 +50,7 @@ class BaseTrainer(ABC):
             print(f"train loss: {avg_loss}, val loss: {avg_vloss}")
                   
             if wandb_run is not None:
-                wandb_log = {"avg_train_loss": avg_loss, "avg_val_loss": avg_vloss}
+                wandb_log = {"avg_train_loss": avg_loss, "avg_val_loss": avg_vloss, "epoch": epoch}
                 wandb_run.log(wandb_log)
             
             if avg_vloss < best_vloss:
