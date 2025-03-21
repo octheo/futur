@@ -23,7 +23,7 @@ class ClassificationMetrics(Metric):
         self.cls_mapping = {"f1": MulticlassF1Score(average="macro", num_classes=self.nb_classes),
                                  "precision": MulticlassPrecision(average="macro", num_classes=self.nb_classes),
                                  "recall": MulticlassRecall(average="macro", num_classes=self.nb_classes),
-                                 "AP": MulticlassAUPRC(num_classes=self.nb_classes)
+                                 "AP": MulticlassAUPRC(average="macro", num_classes=self.nb_classes)
                                 } 
     
     def compute_metrics(self, trainer, model, dataloader, device, samples_set="train"):
