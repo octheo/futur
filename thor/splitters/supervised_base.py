@@ -67,10 +67,10 @@ class MVTech_SP_split(ABC):
         for i, defect_class in enumerate(self.defect_classes):
             samples = self.defect_samples[str(i+1)]
             
-            train_threshold = math.floor(self.train_split*len(samples))
-            val_threshold = train_threshold + math.floor((self.val_split/2)*len(samples))
-            
+            train_threshold = math.floor(self.train_split*len(samples))      
             self.train += samples[:train_threshold]
+
+            val_threshold = train_threshold + math.floor((self.val_split)*(len(samples)-len(samples[:train_threshold])))
             self.val += samples[train_threshold:val_threshold]
             self.test += samples[val_threshold:]
     
