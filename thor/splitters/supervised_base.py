@@ -82,7 +82,7 @@ class MVTech_SP_split(ABC):
             labels = []
             for item in dataset_part:
                 if isinstance(item, tuple):
-                    labels.append(item[2])  # Extract the label from the tuple
+                    labels.append(item[1])  # Extract the label from the tuple
                 else:
                     labels.append(0)  # "good" images are labeled as 0
             
