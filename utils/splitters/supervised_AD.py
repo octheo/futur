@@ -4,7 +4,7 @@ import glob
 from .supervised_base import MVTech_SP_split
 
 
-class MVTech_AD_supervised_seg_split(MVTech_SP_split):
+class MvtechADSupervisedSegSplit(MVTech_SP_split):
     def __init__(self, dataset_path, classname, train_split, val_split, dist_adjust=False, multiclass=False):
         super().__init__(dataset_path, classname, train_split, val_split, dist_adjust, multiclass)
         
@@ -34,9 +34,9 @@ class MVTech_AD_supervised_seg_split(MVTech_SP_split):
         self.nb_defect_samples += len(self.defect_samples[str(i+1)])
 
 
-class MVTech_AD_supervised_cls_split(MVTech_SP_split):
-    def __init__(self, dataset_path, classname, train_split, val_split, dist_adjust=False, multiclass=False):
-        super().__init__(dataset_path, classname, train_split, val_split, dist_adjust, multiclass)
+class MvtechADUnsupervisedClsSplit(MVTech_SP_split):
+    def __init__(self, dataset_path, classname, val_split, dist_adjust=False, multiclass=False):
+        super().__init__(dataset_path, classname, 0, val_split, dist_adjust, multiclass)
         
     def create_samples(self):
 
@@ -70,7 +70,7 @@ class MVTech_AD_supervised_cls_split(MVTech_SP_split):
             self.class_mapping["1"] = "Defect"
         self.nb_defect_samples += len(self.defect_samples[str(i+1)])
 
-class MVTech_AD_unsupervised_cls_split(MVTech_SP_split):
+class MvtechAdSupervisedClsSplit(MVTech_SP_split):
     def __init__(self, dataset_path, classname, train_split, val_split, dist_adjust=False, multiclass=False):
         super().__init__(dataset_path, classname, train_split, val_split, dist_adjust, multiclass)
         
@@ -96,7 +96,7 @@ class MVTech_AD_unsupervised_cls_split(MVTech_SP_split):
         self.nb_defect_samples += len(self.defect_samples[str(i+1)])
 
 
-class MVTech_LOCO_supervised_seg_split(MVTech_SP_split):
+class MvtechLOCOSupervisedSegSplit(MVTech_SP_split):
     def __init__(self, dataset_path, classname, train_split, val_split, dist_adjust=False, multiclass=False):
         super().__init__(dataset_path, classname, train_split, val_split, dist_adjust, multiclass)
         

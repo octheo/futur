@@ -42,9 +42,10 @@ class MVTechDataset_cls(Dataset):
     def __getitem__(self, idx):
         img_path, label = self.samples[idx]
         image = Image.open(img_path).convert('RGB')
+        np_image = np.array(image)
 
         # Apply transforms
         if self.transform:
             image = self.transform(image)
 
-        return image, label
+        return np_image, label
