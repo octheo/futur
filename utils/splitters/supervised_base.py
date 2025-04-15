@@ -29,7 +29,7 @@ class MVTech_SP_split(ABC):
         self.multiclass = multiclass
         self.class_mapping = {}
 
-        self.no_defect_samples = glob.glob(os.path.join(self.root_dir, '*/good/*.png'))
+        self.no_defect_samples = glob.glob(os.path.join(self.root_dir, 'train/good/*.png'))
         self.nb_no_defect_samples = len(self.no_defect_samples)
         self.nb_defect_samples = 0
         self.defect_samples = {}
@@ -39,7 +39,6 @@ class MVTech_SP_split(ABC):
         self.test = []
 
         self.create_samples()
-        self.train_test()
     
     @abstractmethod
     def create_samples(self):
@@ -52,7 +51,7 @@ class MVTech_SP_split(ABC):
       last_subfolders = [os.path.basename(path) for path in filtered_files]
       return last_subfolders
 
-    def train_test(self):
+    def supervised_train_test(self):
         if not self.dist_adjust:
             adjust = 1
         else:
@@ -72,6 +71,22 @@ class MVTech_SP_split(ABC):
 
             val_threshold = train_threshold + math.floor((self.val_split)*(len(samples)-len(samples[:train_threshold])))
             self.val += samples[train_threshold:val_threshold]
+            self.test += samples[val_threshold:]
+    
+    def unsupervised_train_test(self):
+
+        self.train += self.no_defect_samples
+        
+        good_test_samples = self.defect_samples["0"]
+        threshold = math.floor(self.val_split*len(good_test_samples))      
+        self.val += good_test_samples[:threshold]
+        self.test += good_test_samples[threshold:]
+        
+        for i, defect_class in enumerate(self.defect_classes):
+            samples = self.defect_samples[str(i+1)]
+            
+            val_threshold = math.floor(self.val_split*len(samples))      
+            self.val += samples[:val_threshold]
             self.test += samples[val_threshold:]
     
     def plot_dist(self):
