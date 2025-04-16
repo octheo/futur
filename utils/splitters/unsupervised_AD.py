@@ -25,6 +25,11 @@ class MvtechADUnsupervisedSplit(UnsupervisedSplit):
         for i, defect_class in enumerate(self.defect_classes):
             samples = glob.glob(os.path.join(self.root_dir, 'test', defect_class, '*.png'))
             
-            val_threshold = math.floor(self.val_split*len(samples))      
-            self.val += [(sample, i) for sample in samples[:val_threshold]]
-            self.test += [(sample, i) for sample in samples[val_threshold:]]
+            val_threshold = math.floor(self.val_split*len(samples))
+            
+            if self.multiclass:
+                self.val += [(sample, i) for sample in samples[:val_threshold]]
+                self.test += [(sample, i) for sample in samples[val_threshold:]]
+            else:
+                self.val += [(sample, 1) for sample in samples[:val_threshold]]
+                self.test += [(sample, 1) for sample in samples[val_threshold:]]
