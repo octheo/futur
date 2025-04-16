@@ -15,12 +15,15 @@ class MvtechADUnsupervisedSplit(UnsupervisedSplit):
     def _split_train_test(self):
 
         train_samples = glob.glob(os.path.join(self.root_dir, 'train/good/*.png'))
-        self.train = [(train_sample, 0) for train_sample in train_samples]
+        self.train = [train_sample for train_sample in train_samples]
+        self.train_labels = [0 for _ in range(len(train_samples))]
         
         good_test_samples = glob.glob(os.path.join(self.root_dir, 'test/good/*.png'))
         val_threshold = math.floor(self.val_split*len(good_test_samples))      
-        self.val = [(good_test_sample, 0) for good_test_sample in good_test_samples[:val_threshold]]
-        self.test = [(good_test_sample, 0) for good_test_sample in good_test_samples[val_threshold:]]
+        self.val = [good_test_sample for good_test_sample in good_test_samples[:val_threshold]]
+        self.val_labels = [0 for _ in range(len(good_test_samples[:val_threshold]))]
+        self.test = [good_test_sample for good_test_sample in good_test_samples[val_threshold:]]
+        self.test_labels = [0 for _ in range(len(good_test_samples[val_threshold:]))]
         
         for i, defect_class in enumerate(self.defect_classes):
             samples = glob.glob(os.path.join(self.root_dir, 'test', defect_class, '*.png'))
@@ -29,11 +32,11 @@ class MvtechADUnsupervisedSplit(UnsupervisedSplit):
 
             if self.multiclass:
                 self.val += [sample for sample in samples[:val_threshold]]
-                self.val_labels += [i for _ in samples[:val_threshold]]
-                self.test += [(sample, i) for sample in samples[val_threshold:]]
-                self.test_labels += [i for _ in samples[val_threshold:]]
+                self.val_labels += [i] * len(samples[:val_threshold])
+                self.test += [sample for sample in samples[val_threshold:]]
+                self.test_labels += [i] * len(samples[val_threshold:])
             else:
                 self.val += [sample for sample in samples[:val_threshold]]
-                self.val_labels += [1 for _ in samples[:val_threshold]]
+                self.val_labels += [1] * len(samples[:val_threshold])
                 self.test += [sample for sample in samples[val_threshold:]]
-                self.test_labels += [1 for _ in samples[val_threshold:]]
+                self.test_labels += [1] * len(samples[val_threshold:])

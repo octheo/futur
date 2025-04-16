@@ -47,7 +47,7 @@ class UnsupervisedSplit(ABC):
 
     def _create_class_mapping(self):
         if self.multiclass:
-            return {i: defect_class for i, defect_class in enumerate(self.defect_classes + ["good"])}
+            return {i: defect_class for i, defect_class in enumerate(["good"] + self.defect_classes)}
         else:
             return {0: "good", 1: "defect"}
     
