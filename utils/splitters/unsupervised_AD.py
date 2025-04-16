@@ -26,10 +26,14 @@ class MvtechADUnsupervisedSplit(UnsupervisedSplit):
             samples = glob.glob(os.path.join(self.root_dir, 'test', defect_class, '*.png'))
             
             val_threshold = math.floor(self.val_split*len(samples))
-            
+
             if self.multiclass:
-                self.val += [(sample, i) for sample in samples[:val_threshold]]
+                self.val += [sample for sample in samples[:val_threshold]]
+                self.val_labels += [i for _ in samples[:val_threshold]]
                 self.test += [(sample, i) for sample in samples[val_threshold:]]
+                self.test_labels += [i for _ in samples[val_threshold:]]
             else:
-                self.val += [(sample, 1) for sample in samples[:val_threshold]]
-                self.test += [(sample, 1) for sample in samples[val_threshold:]]
+                self.val += [sample for sample in samples[:val_threshold]]
+                self.val_labels += [1 for _ in samples[:val_threshold]]
+                self.test += [sample for sample in samples[val_threshold:]]
+                self.test_labels += [1 for _ in samples[val_threshold:]]

@@ -29,8 +29,11 @@ class UnsupervisedSplit(ABC):
         self.class_mapping = self._create_class_mapping()
 
         self.train = []
+        self.train_labels = []
         self.val = []
+        self.val_labels = []
         self.test = []
+        self.test_labels = []
 
         self._split_train_test()
 
