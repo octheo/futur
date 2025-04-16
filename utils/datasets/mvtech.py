@@ -41,9 +41,12 @@ class MVTechDataset_cls(Dataset):
         return len(self.samples)
 
     def __getitem__(self, idx):
-        img_path = self.samples[idx]
-        image = Image.open(img_path).convert('RGB')
-        np_image = np.array(image)
+        if isinstance(idx, slice):
+            return [self.__getitem__(i) for i in range(idx.start, idx.stop, idx.step if idx.step else 1)]
+        else:
+            img_path = self.samples[idx]
+            image = Image.open(img_path).convert('RGB')
+            np_image = np.array(image)
 
         # Apply transforms
         if self.transform:

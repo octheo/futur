@@ -23,5 +23,9 @@ class TestDatasets(unittest.TestCase):
         self.assertIsInstance(self.dataset[0][0], np.ndarray)
         self.assertIsInstance(self.dataset[0][1], int)
 
+    def test_slice(self):
+        self.assertEqual(len(self.dataset[0:10]), 10)
+        self.assertEqual(self.dataset[0:10][0][0].shape[-1], 3)
+
 if __name__ == "__main__":
     unittest.main()
