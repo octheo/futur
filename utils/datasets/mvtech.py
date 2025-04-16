@@ -32,15 +32,16 @@ class MVTechDataset_AD(Dataset):
 
 class MVTechDataset_cls(Dataset):
     
-    def __init__(self, samples, transform=None):
+    def __init__(self, samples, labels, transform=None):
         self.samples = samples
+        self.labels = labels
         self.transform = transform
 
     def __len__(self):
         return len(self.samples)
 
     def __getitem__(self, idx):
-        img_path, label = self.samples[idx]
+        img_path = self.samples[idx]
         image = Image.open(img_path).convert('RGB')
         np_image = np.array(image)
 
@@ -48,4 +49,4 @@ class MVTechDataset_cls(Dataset):
         if self.transform:
             image = self.transform(image)
 
-        return np_image, label
+        return np_image, self.labels[idx]
