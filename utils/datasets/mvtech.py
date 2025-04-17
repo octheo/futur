@@ -42,7 +42,13 @@ class MVTechDataset_cls(Dataset):
 
     def __getitem__(self, idx):
         if isinstance(idx, slice):
-            return [self.__getitem__(i) for i in range(idx.start, idx.stop, idx.step if idx.step else 1)]
+            images = []
+            labels = []
+            for i in range(idx.start, idx.stop, idx.step if idx.step else 1):
+                image, label = self.__getitem__(i)
+                images.append(image)
+                labels.append(label)
+            return np.array(images), np.array(labels)
         else:
             img_path = self.samples[idx]
             image = Image.open(img_path).convert('RGB')
